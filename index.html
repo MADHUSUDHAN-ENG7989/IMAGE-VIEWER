@@ -742,7 +742,10 @@
             if (!rollNo) return;
 
             currentRollNo = rollNo;
-            const imageUrl = baseUrl + rollNo + '.jpg';
+            if(rollNo!=="24BD1A58H"){
+                const imageUrl = baseUrl + rollNo + '.jpg';
+            }
+            
             
             // Reset zoom and rotation
             zoom = 100;
@@ -870,4 +873,5 @@
     </script>
 </body>
 </html>
+
 
