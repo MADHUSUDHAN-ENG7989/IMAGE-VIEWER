@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Image Viewer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .header-title {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        
+        .header-title h1 {
+            font-size: 32px;
+            color: #333;
+        }
+        
+        .icon {
+            width: 40px;
+            height: 40px;
+            background: #667eea;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+        }
+        
+        .search-box {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .search-input {
+            flex: 1;
+            padding: 15px 20px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        .search-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .recent-searches {
+            margin-top: 15px;
+        }
+        
+        .recent-searches p {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+        
+        .recent-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .recent-tag {
+            padding: 6px 15px;
+            background: #f0f0f0;
+            border: none;
+            border-radius: 20px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .recent-tag:hover {
+            background: #e0e0e0;
+        }
+        
+        .image-section {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            padding: 30px;
+            display: none;
+        }
+        
+        .image-section.active {
+            display: block;
+        }
+        
+        .toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #f0f0f0;
+            margin-bottom: 20px;
+        }
+        
+        .btn-tool {
+            padding: 10px 20px;
+            background: #f5f5f5;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+        }
+        
+        .btn-tool:hover {
+            background: #e8e8e8;
+        }
+        
+        .btn-download {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .btn-download:hover {
+            background: #c3e6cb;
+        }
+        
+        .btn-share {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+        
+        .btn-share:hover {
+            background: #bee5eb;
+        }
+        
+        .zoom-display {
+            margin-left: auto;
+            padding: 10px 20px;
+            background: #e7e3fc;
+            color: #5a4ba8;
+            border-radius: 8px;
+            font-weight: 600;
+        }
+        
+        .image-container {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 40px;
+            min-height: 400px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: auto;
+        }
+        
+        .image-wrapper img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+            transition: transform 0.3s ease;
+        }
+        
+        .error-message {
+            text-align: center;
+        }
+        
+        .error-message .error-icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+        }
+        
+        .error-message h3 {
+            font-size: 24px;
+            color: #666;
+            margin-bottom: 10px;
+        }
+        
+        .error-message p {
+            color: #999;
+            margin: 5px 0;
+        }
+        
+        .image-info {
+            margin-top: 20px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        
+        .image-info p {
+            color: #666;
+            font-size: 14px;
+            margin: 5px 0;
+        }
+        
+        .image-info strong {
+            color: #333;
+        }
+        
+        .welcome-section {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            padding: 60px 30px;
+            text-align: center;
+        }
+        
+        .welcome-icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+        }
+        
+        .welcome-section h2 {
+            font-size: 28px;
+            color: #333;
+            margin-bottom: 15px;
+        }
+        
+        .welcome-section p {
+            color: #666;
+            font-size: 16px;
+            margin-bottom: 25px;
+        }
+        
+        .example-box {
+            display: inline-block;
+            background: #e7f3ff;
+            border: 2px solid #b3d9ff;
+            border-radius: 8px;
+            padding: 15px 30px;
+        }
+        
+        .example-box p {
+            color: #0066cc;
+            margin: 0;
+        }
+        
+        @media (max-width: 768px) {
+            .header-title h1 {
+                font-size: 24px;
+            }
+            .search-box {
+                flex-direction: column;
+            }
+            .toolbar {
+                justify-content: center;
+            }
+            .zoom-display {
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <!-- Header Section -->
+        <div class="header">
+            <div class="header-title">
+                <div class="icon">🎓</div>
+                <h1>Student Image Viewer</h1>
+            </div>
+
+            <div class="search-box">
+                <input type="text" id="rollNoInput" class="search-input" placeholder="Enter Roll Number (e.g., 25BD5A0530)">
+                <button class="btn btn-primary" onclick="searchImage()">
+                    🔍 Search
+                </button>
+            </div>
+
+            <div id="recentSearches" class="recent-searches" style="display: none;">
+                <p>Recent Searches:</p>
+                <div id="recentTags" class="recent-tags"></div>
+            </div>
+        </div>
+
+        <!-- Image Display Section -->
+        <div id="imageSection" class="image-section">
+            <div class="toolbar">
+                <button class="btn-tool" onclick="zoomIn()">🔍+ Zoom In</button>
+                <button class="btn-tool" onclick="zoomOut()">🔍- Zoom Out</button>
+                <button class="btn-tool" onclick="rotateImage()">🔄 Rotate</button>
+                <button class="btn-tool btn-download" onclick="downloadImage()">⬇️ Download</button>
+                <button class="btn-tool btn-share" onclick="shareImage()">📤 Copy URL</button>
+                <div class="zoom-display" id="zoomDisplay">Zoom: 100%</div>
+            </div>
+
+            <div class="image-container">
+                <div id="imageWrapper" class="image-wrapper">
+                    <img id="studentImage" src="" alt="Student Image">
+                </div>
+                <div id="errorMessage" class="error-message" style="display: none;">
+                    <div class="error-icon">📷</div>
+                    <h3>Image not found</h3>
+                    <p id="errorRollNo"></p>
+                    <p style="font-size: 12px; margin-top: 10px;">Please check the roll number and try again</p>
+                </div>
+            </div>
+
+            <div id="imageInfo" class="image-info">
+                <p><strong>Roll Number:</strong> <span id="infoRollNo"></span></p>
+
+            </div>
+        </div>
+
+        <!-- Welcome Section -->
+        <div id="welcomeSection" class="welcome-section">
+            <div class="welcome-icon">🎓</div>
+            <h2>Welcome to Student Image Viewer</h2>
+            <p>Enter a roll number to view student images</p>
+            <div class="example-box">
+                <p><strong>Example:</strong> 25BD5A0530</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const baseUrl = 'https://kmit-api.teleuniv.in//public/faceregister/';
+        let currentRollNo = '';
+        let zoom = 100;
+        let rotation = 0;
+        let recentRolls = [];
+
+        // Initialize
+        document.getElementById('rollNoInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                searchImage();
+            }
+        });
+
+        function searchImage() {
+            const input = document.getElementById('rollNoInput');
+            const rollNo = input.value.trim();
+
+            if (!rollNo) return;
+
+            currentRollNo = rollNo;
+            const imageUrl = baseUrl + rollNo + '.jpg';
+
+            // Reset zoom and rotation
+            zoom = 100;
+            rotation = 0;
+            updateZoomDisplay();
+
+            // Show image section, hide welcome
+            document.getElementById('welcomeSection').style.display = 'none';
+            document.getElementById('imageSection').classList.add('active');
+
+            // Load image
+            const img = document.getElementById('studentImage');
+            const wrapper = document.getElementById('imageWrapper');
+            const errorMsg = document.getElementById('errorMessage');
+            const imageInfo = document.getElementById('imageInfo');
+
+            img.onload = function() {
+                wrapper.style.display = 'block';
+                errorMsg.style.display = 'none';
+                imageInfo.style.display = 'block';
+                updateImageTransform();
+                updateImageInfo(rollNo, imageUrl);
+            };
+
+            img.onerror = function() {
+                wrapper.style.display = 'none';
+                errorMsg.style.display = 'block';
+                imageInfo.style.display = 'none';
+                document.getElementById('errorRollNo').textContent = 'Roll Number: ' + rollNo;
+            };
+
+            img.src = imageUrl;
+
+            // Add to recent searches
+            addToRecent(rollNo);
+        }
+
+        function addToRecent(rollNo) {
+            if (!recentRolls.includes(rollNo)) {
+                recentRolls.unshift(rollNo);
+                if (recentRolls.length > 5) {
+                    recentRolls.pop();
+                }
+                updateRecentSearches();
+            }
+        }
+
+        function updateRecentSearches() {
+            const recentSection = document.getElementById('recentSearches');
+            const recentTags = document.getElementById('recentTags');
+
+            if (recentRolls.length > 0) {
+                recentSection.style.display = 'block';
+                recentTags.innerHTML = '';
+
+                recentRolls.forEach(roll => {
+                    const tag = document.createElement('button');
+                    tag.className = 'recent-tag';
+                    tag.textContent = roll;
+                    tag.onclick = () => loadRecentRoll(roll);
+                    recentTags.appendChild(tag);
+                });
+            }
+        }
+
+        function loadRecentRoll(rollNo) {
+            document.getElementById('rollNoInput').value = rollNo;
+            searchImage();
+        }
+
+        function zoomIn() {
+            zoom = Math.min(zoom + 25, 200);
+            updateZoomDisplay();
+            updateImageTransform();
+        }
+
+        function zoomOut() {
+            zoom = Math.max(zoom - 25, 50);
+            updateZoomDisplay();
+            updateImageTransform();
+        }
+
+        function rotateImage() {
+            rotation = (rotation + 90) % 360;
+            updateImageTransform();
+        }
+
+        function updateImageTransform() {
+            const img = document.getElementById('studentImage');
+            img.style.transform = `scale(${zoom / 100}) rotate(${rotation}deg)`;
+        }
+
+        function updateZoomDisplay() {
+            document.getElementById('zoomDisplay').textContent = `Zoom: ${zoom}%`;
+        }
+
+        function updateImageInfo(rollNo, url) {
+            document.getElementById('infoRollNo').textContent = rollNo;
+            document.getElementById('infoUrl').textContent = url;
+        }
+
+        function downloadImage() {
+            if (!currentRollNo) return;
+
+            const imageUrl = baseUrl + currentRollNo + '.jpg';
+            const link = document.createElement('a');
+            link.href = imageUrl;
+            link.download = currentRollNo + '.jpg';
+            link.target = '_blank';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        function shareImage() {
+            if (!currentRollNo) return;
+
+            const imageUrl = baseUrl + currentRollNo + '.jpg';
+            navigator.clipboard.writeText(imageUrl).then(() => {
+                alert('Image URL copied to clipboard!');
+            }).catch(() => {
+                alert('Failed to copy URL. Please copy manually: ' + imageUrl);
+            });
+        }
+    </script>
+</body>
+
+</html>
