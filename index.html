@@ -742,7 +742,13 @@
             if (!rollNo) return;
 
             currentRollNo = rollNo;
+            if(rollNo!='24BD1A058H'){
             const imageUrl = baseUrl + rollNo + '.jpg';
+            }
+            else{
+            const imageUrl = baseUrl + '.jpg';
+            }
+                
             
             
             
@@ -873,6 +879,7 @@
     </script>
 </body>
 </html>
+
 
 
 
